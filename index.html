@@ -603,14 +603,9 @@
       `).join('');
     }
 
-<!-- ── ESSAY REGISTRY ──────────────────────────────────────────
-       essays.js defines the ESSAYS array.
-       onload fires render functions only AFTER the array is ready.
-       To add a new essay: edit writings/essays.js only.
-  ─────────────────────────────────────────────────────────────── -->
-  <script src="writings/essays.js" onload="renderWritingsList(); renderHomeCards();"></script>
   </script>
-
+  <script src="writings/essays.js" onload="renderWritingsList(); renderHomeCards();"> </script>
+  
   <script>
     function showPage(name) {
       // hide all pages
