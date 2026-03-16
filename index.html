@@ -467,19 +467,12 @@
     </div>
 
     <div class="section-divider">Recent Writings</div>
-    <div class="cards-grid">
-      <a href="#" class="card" onclick="showPage('writings')">
-        <span class="card-tag">Essay</span>
-        <span class="card-title">Why I'm Learning in Public</span>
-        <p class="card-desc">Your first post — it doesn't have to be perfect, it has to be honest.</p>
-        <span class="card-arrow">→</span>
-      </a>
-      <a href="#" class="card" onclick="showPage('writings')">
-        <span class="card-tag">Note</span>
-        <span class="card-title">Something I figured out</span>
-        <p class="card-desc">Short notes and observations count as writing. Don't wait for a big idea.</p>
-        <span class="card-arrow">→</span>
-      </a>
+    <!-- Recent writing cards — generated from writings/essays.js -->
+    <div class="cards-grid" id="home-writings-grid">
+      <div class="card" style="opacity:0.4; pointer-events:none;">
+        <span class="card-tag">Loading</span>
+        <span class="card-title">...</span>
+      </div>
     </div>
 
     <footer>
@@ -546,28 +539,11 @@
       <p>Essays, notes, and observations. Thinking out loud.</p>
     </div>
 
-    <div class="writings-list">
-      <a href="#" class="writing-item">
-        <span class="writing-date">Mar 2026</span>
-        <div class="writing-content">
-          <div class="writing-title">Why I'm Learning in Public</div>
-          <div class="writing-excerpt">The uncomfortable but useful practice of sharing half-formed ideas before you're ready.</div>
-        </div>
-        <span class="writing-tag">Essay</span>
-      </a>
-
-      <a href="#" class="writing-item">
-        <span class="writing-date">Mar 2026</span>
-        <div class="writing-content">
-          <div class="writing-title">First Impressions of The Odin Project</div>
-          <div class="writing-excerpt">What it's actually like to learn web development from scratch with a structured curriculum.</div>
-        </div>
-        <span class="writing-tag">Note</span>
-      </a>
-
+    <!-- Writing items are generated from writings/essays.js -->
+    <div class="writings-list" id="writings-list">
       <div class="empty-state">
         <div class="big">...</div>
-        More writing on the way. Ideas take time.
+        Loading essays...
       </div>
     </div>
 
@@ -577,6 +553,60 @@
     </footer>
   </div>
 
+    <!-- Load essay registry and render writings list + home cards -->
+  <script src="writings/essays.js"></script>
+  <script>
+    // Render the full writings list on the Writings page
+    function renderWritingsList() {
+      const list = document.getElementById('writings-list');
+      if (!list || typeof ESSAYS === 'undefined') return;
+
+      if (ESSAYS.length === 0) {
+        list.innerHTML = `<div class="empty-state"><div class="big">...</div>No essays yet. Check back soon.</div>`;
+        return;
+      }
+
+      list.innerHTML = ESSAYS.map(e => `
+        <a href="writings/essay.html?slug=${e.slug}" class="writing-item">
+          <span class="writing-date">${e.date}</span>
+          <div class="writing-content">
+            <div class="writing-title">${e.title}</div>
+            <div class="writing-excerpt">${e.excerpt}</div>
+          </div>
+          <span class="writing-tag">${e.tag}</span>
+        </a>
+      `).join('') + `
+        <div class="empty-state">
+          <div class="big">...</div>
+          More writing on the way. Ideas take time.
+        </div>`;
+    }
+
+    // Render the 2 most recent essays as cards on the Home page
+    function renderHomeCards() {
+      const grid = document.getElementById('home-writings-grid');
+      if (!grid || typeof ESSAYS === 'undefined') return;
+
+      const recent = ESSAYS.slice(0, 2);
+      if (recent.length === 0) {
+        grid.innerHTML = `<div class="card" style="opacity:0.4;pointer-events:none;"><span class="card-tag">Coming soon</span><span class="card-title">No essays yet</span></div>`;
+        return;
+      }
+
+      grid.innerHTML = recent.map(e => `
+        <a href="writings/essay.html?slug=${e.slug}" class="card">
+          <span class="card-tag">${e.tag}</span>
+          <span class="card-title">${e.title}</span>
+          <p class="card-desc">${e.excerpt}</p>
+          <span class="card-arrow">→</span>
+        </a>
+      `).join('');
+    }
+
+    renderWritingsList();
+    renderHomeCards();
+  </script>
+  
   <script>
     function showPage(name) {
       // hide all pages
